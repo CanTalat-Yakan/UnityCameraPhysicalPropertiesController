@@ -15,7 +15,7 @@ MonoBehaviour:
   ShutterRange: {x: 2000, y: 50}
   FStopRange: {x: 3.5, y: 5.6}
   ISORange: {x: 100, y: 2000}
-  FocalLengthRange: {x: 22, y: 70}
-  AffectLensDistortion: 1
+  FocalLengthRange: {x: 12, y: 70}
+  LensDistortion: 1
   SensorType: 10
   SensorSize: {x: 24.89, y: 18.66}
