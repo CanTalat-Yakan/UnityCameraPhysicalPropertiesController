@@ -19,11 +19,11 @@ MonoBehaviour:
   SensorType: 10
   ShutterRange: {x: 60, y: 1}
   FStopRange: {x: 1.2, y: 22}
-  ISORange: {x: 100, y: 25600}
-  NoiseStrength: 0.5
-  FocalLengthRange: {x: 24, y: 70}
-  AffectLensDistortion: 0
-  SensorSize: {x: 0, y: 0}
+  ISORange: {x: 100, y: 200}
+  NoiseStrength: 1
+  FocalLengthRange: {x: 3.6, y: 70}
+  AffectLensDistortion: 1
+  SensorSize: {x: 24.89, y: 18.66}
   FrameRate: 0
   Interlaced: 0
   FieldRate: 0

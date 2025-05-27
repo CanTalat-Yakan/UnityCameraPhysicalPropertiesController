@@ -157,7 +157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8000571544549568975}
   m_Layer: 0
-  m_Name: UnityEssentials_Camera_NoiseVolumes
+  m_Name: UnityEssentials_Prefab_CameraNoiseVolumes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

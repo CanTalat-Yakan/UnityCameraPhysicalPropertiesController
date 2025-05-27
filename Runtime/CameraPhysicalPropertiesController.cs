@@ -46,7 +46,7 @@ namespace UnityEssentials
             _camera = GetComponent<Camera>();
             _cinemachineCamera = GetComponent<CinemachineCamera>();
 
-            var prefab = ResourceLoader.InstantiatePrefab("UnityEssentials_Camera_NoiseVolumes", "Camera Noise Volumes", this.gameObject.transform);
+            var prefab = ResourceLoader.InstantiatePrefab("UnityEssentials_Prefab_CameraNoiseVolumes", "Camera Noise Volumes", this.gameObject.transform);
             if (prefab != null)
             {
                 var volumes = prefab.GetComponentsInChildren<Volume>();
