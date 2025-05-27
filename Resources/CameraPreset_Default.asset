@@ -12,18 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91089045fb678fd4cafdc23ba1c68f98, type: 3}
   m_Name: CameraPreset_Default
   m_EditorClassIdentifier: 
-  ModelName: Generic Camera
-  Manufacturer: Manufacturer
-  ReleaseYear: 2025
-  VideoStandard: 0
-  SensorType: 10
-  ShutterRange: {x: 60, y: 1}
-  FStopRange: {x: 1.2, y: 22}
-  ISORange: {x: 100, y: 200}
-  NoiseStrength: 1
-  FocalLengthRange: {x: 3.6, y: 70}
+  ShutterRange: {x: 2000, y: 50}
+  FStopRange: {x: 3.5, y: 5.6}
+  ISORange: {x: 100, y: 2000}
+  FocalLengthRange: {x: 22, y: 70}
   AffectLensDistortion: 1
+  SensorType: 10
   SensorSize: {x: 24.89, y: 18.66}
-  FrameRate: 0
-  Interlaced: 0
-  FieldRate: 0

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4144134262810548938}
   - component: {fileID: 7651096891985970690}
   m_Layer: 0
-  m_Name: FOV Volume
+  m_Name: Fov Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 2991717008437808626}
   - component: {fileID: 7805983536967684921}
   m_Layer: 0
-  m_Name: ISO Volume
+  m_Name: Iso Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

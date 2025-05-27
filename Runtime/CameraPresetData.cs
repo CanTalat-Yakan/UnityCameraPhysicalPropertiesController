@@ -2,23 +2,6 @@ using UnityEngine;
 
 namespace UnityEssentials
 {
-    public enum VideoStandard
-    {
-        Dynamic,   // No fixed framerate (e.g., virtual cameras, screen capture)
-        NTSC,       // 29.97fps interlaced (60i) – North America, Japan
-        PAL,        // 25fps interlaced (50i) – Europe, Australia
-        SECAM,      // 25fps interlaced (50i) – France, ex-USSR
-        ATSC,       // Modern digital broadcast (varies, typically 1080i60 or 720p60)
-        DCI,        // Digital Cinema (24fps progressive)
-        HDTV_720p,  // 720p60 (common for sports/broadcast)
-        HDTV_1080i, // 1080i60 (common for broadcast)
-        HDTV_1080p, // 1080p24/30/60 (Blu-ray, streaming)
-        UHDTV_4K,   // 2160p24/30/60 (4K UHD)
-        UHDTV_8K,   // 4320p60 (8K UHD, experimental)
-        FILM_24p,   // Pure 24fps progressive (film standard)
-        FILM_48p    // High-frame-rate film (e.g., "The Hobbit" at 48fps)
-    }
-
     public enum SensorStandard
     {
         Standard,               // X: 50     Y: 50
@@ -44,118 +27,23 @@ namespace UnityEssentials
     [CreateAssetMenu(fileName = "CameraPreset_", menuName = "Camera/Camera Preset")]
     public class CameraPresetData : ScriptableObject
     {
-        [Header("Camera Identity")]
-        public string ModelName = "Generic Camera";
-        public string Manufacturer = "Manufacturer";
-        public int ReleaseYear = 2025;
+        [Space]
+        public Vector2 ShutterRange = new(2000, 50);
 
-        [Header("Standards")]
-        public VideoStandard VideoStandard = VideoStandard.Dynamic;
+        [Space]
+        public Vector2 FStopRange = new(3.5f, 5.6f);
+        public Vector2Int ISORange = new(100, 2000);
+
+        [Space]
+        public Vector2 FocalLengthRange = new(22f, 70f);
+        public bool LensDistortion = true;
+
+        [Space]
         public SensorStandard SensorType = SensorStandard.Super35;
-
-        [Header("Shutter Control")]
-        public Vector2 ShutterRange = new(60, 1);
-
-        [Header("Exposure Settings")]
-        public Vector2 FStopRange = new(1.2f, 22f);
-        public Vector2Int ISORange = new(100, 25600); 
-        public float NoiseStrength = 0.5f;
-
-        [Header("Lens Specifications")]
-        public Vector2 FocalLengthRange = new(24f, 70f);
-        public bool AffectLensDistortion = false;
-
-        [Header("Timing Settings")]
-        [HideInInspector] public Vector2 SensorSize;    // The size calculated from the sensor type 
-        [HideInInspector] public float FrameRate;       // Actual frames per second (e.g., 29.97)
-        [HideInInspector] public bool Interlaced;       // Whether to use interlaced scanning
-        [HideInInspector] public float FieldRate;       // Fields per second (e.g., 60 for NTSC)
+        [HideInInspector] public Vector2 SensorSize; // The size calculated from the sensor type 
 
         public void OnValidate()
         {
-            // Auto-configure based on standard
-            switch (VideoStandard)
-            {
-                case VideoStandard.Dynamic:
-                    FrameRate = 0;
-                    Interlaced = false;
-                    FieldRate = 0;
-                    break;
-
-                case VideoStandard.NTSC:
-                    FrameRate = 29.97f;
-                    Interlaced = true;
-                    FieldRate = 59.94f;
-                    break;
-
-                case VideoStandard.PAL:
-                case VideoStandard.SECAM:
-                    FrameRate = 25f;
-                    Interlaced = true;
-                    FieldRate = 50f;
-                    break;
-
-                case VideoStandard.ATSC:
-                    // ATSC supports multiple formats; default to 1080i60
-                    FrameRate = 29.97f;
-                    Interlaced = true;
-                    FieldRate = 59.94f;
-                    break;
-
-                case VideoStandard.DCI:
-                case VideoStandard.FILM_24p:
-                    FrameRate = 24f;
-                    Interlaced = false;
-                    FieldRate = 24f;
-                    break;
-
-                case VideoStandard.HDTV_720p:
-                    FrameRate = 60f;
-                    Interlaced = false;
-                    FieldRate = 60f;
-                    break;
-
-                case VideoStandard.HDTV_1080i:
-                    FrameRate = 29.97f;
-                    Interlaced = true;
-                    FieldRate = 59.94f;
-                    break;
-
-                case VideoStandard.HDTV_1080p:
-                    // Common options: 24p, 30p, 60p (default to 30p)
-                    FrameRate = 30f;
-                    Interlaced = false;
-                    FieldRate = 30f;
-                    break;
-
-                case VideoStandard.UHDTV_4K:
-                    // Common options: 24p, 30p, 60p (default to 30p)
-                    FrameRate = 30f;
-                    Interlaced = false;
-                    FieldRate = 30f;
-                    break;
-
-                case VideoStandard.UHDTV_8K:
-                    // Typically 60fps due to high data rate
-                    FrameRate = 60f;
-                    Interlaced = false;
-                    FieldRate = 60f;
-                    break;
-
-                case VideoStandard.FILM_48p:
-                    FrameRate = 48f;
-                    Interlaced = false;
-                    FieldRate = 48f;
-                    break;
-
-                default:
-                    Debug.LogWarning("Unknown video standard. Using default NTSC settings.");
-                    FrameRate = 29.97f;
-                    Interlaced = true;
-                    FieldRate = 59.94f;
-                    break;
-            }
-
             // Auto-configure based on standard
             switch (SensorType)
             {
@@ -214,7 +102,7 @@ namespace UnityEssentials
                     SensorSize = new Vector2(70.41f, 52.63f);
                     break;
                 default:
-                    SensorSize = Vector2.zero; // Fallback in case of an invalid value
+                    SensorSize = Vector2.zero;
                     break;
             }
         }

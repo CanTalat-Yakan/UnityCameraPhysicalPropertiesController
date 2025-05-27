@@ -5,13 +5,13 @@ using Unity.Cinemachine;
 
 namespace UnityEssentials
 {
-    [ExecuteAlways]
     [RequireComponent(typeof(Camera))]
     public class CameraPhysicalPropertiesController : MonoBehaviour
     {
         [SerializeField] private CameraPresetData _presetData;
 
         [Space]
+        [Range(0, 1)] public float NoiseStrength = 1;
         [Range(0, 1)] public float ZoomMultiplier = 0.5f;
         [Range(0, 1)] public float IsoMultiplier = 0.5f;
         [Range(0, 1)] public float ShutterSpeedMultiplier = 0.5f;
@@ -44,15 +44,15 @@ namespace UnityEssentials
         public void Awake()
         {
             _camera = GetComponent<Camera>();
+            _camera.usePhysicalProperties = true;
             _cinemachineCamera = GetComponent<CinemachineCamera>();
 
             var prefab = ResourceLoader.InstantiatePrefab("UnityEssentials_Prefab_CameraNoiseVolumes", "Camera Noise Volumes", this.gameObject.transform);
             if (prefab != null)
             {
-                var volumes = prefab.GetComponentsInChildren<Volume>();
-                _isoVolume = volumes[0];
-                _zoomVolume = volumes[1];
-                _fovVolume = volumes[2];
+                _isoVolume = prefab.transform.Find("Iso Volume")?.GetComponent<Volume>();
+                _zoomVolume = prefab.transform.Find("Zoom Volume")?.GetComponent<Volume>();
+                _fovVolume = prefab.transform.Find("Fov Volume")?.GetComponent<Volume>();
             }
         }
 
@@ -88,14 +88,14 @@ namespace UnityEssentials
                 _camera.shutterSpeed = ShutterSpeedUnscaled;
             }
 
-            _isoVolume.weight = IsoMultiplier * _presetData.NoiseStrength;
-            _zoomVolume.weight = ZoomMultiplier * _presetData.NoiseStrength;
+            _isoVolume.weight = IsoMultiplier * NoiseStrength;
+            _zoomVolume.weight = ZoomMultiplier * NoiseStrength;
 
             var focalLengthDistortionMultiplier = FocalLength;
             focalLengthDistortionMultiplier = Mathf.Clamp01(focalLengthDistortionMultiplier.Remap(35, 1, 0, 1));
 
-            _fovVolume.weight = _presetData.AffectLensDistortion ? 1 - ZoomMultiplier : 0;
-            _fovVolume.weight *= focalLengthDistortionMultiplier * _presetData.NoiseStrength;
+            _fovVolume.weight = _presetData.LensDistortion ? 1 - ZoomMultiplier : 0;
+            _fovVolume.weight *= focalLengthDistortionMultiplier * NoiseStrength;
         }
 
         private void UpdatePhysicalValues()
