@@ -1,0 +1,116 @@
+using System;
+using UnityEngine;
+using UnityEngine.Rendering;
+using Unity.Cinemachine;
+
+namespace UnityEssentials
+{
+    [ExecuteAlways]
+    [RequireComponent(typeof(Camera))]
+    public class CameraPhysicalPropertiesController : MonoBehaviour
+    {
+        [SerializeField] private CameraPresetData _presetData;
+
+        [Space]
+        [Range(0, 1)] public float ZoomMultiplier = 0.5f;
+        [Range(0, 1)] public float IsoMultiplier = 0.5f;
+        [Range(0, 1)] public float ShutterSpeedMultiplier = 0.5f;
+
+        private Camera _camera;
+        private CinemachineCamera _cinemachineCamera;
+
+        private Volume _isoVolume;
+        private Volume _zoomVolume;
+        private Volume _fovVolume;
+
+        public float FStop { get; private set; }
+        public float FocalLength { get; private set; }
+        public float ShutterSpeed { get; private set; }
+        public int ISO { get; private set; }
+
+        public Vector2 SensorSize => _presetData.SensorSize;
+        public float ShutterSpeedUnscaled => _presetData.ShutterRange.x.Slerp(_presetData.ShutterRange.y, ShutterSpeedMultiplier, 0.5f);
+
+        public CameraPresetData Preset
+        {
+            get => _presetData;
+            set
+            {
+                _presetData = value;
+                UpdatePhysicalValues();
+            }
+        }
+
+        public void Awake()
+        {
+            _camera = GetComponent<Camera>();
+            _cinemachineCamera = GetComponent<CinemachineCamera>();
+
+            var prefab = ResourceLoader.InstantiatePrefab("UnityEssentials_Camera_NoiseVolumes", "Camera Noise Volumes", this.gameObject.transform);
+            if (prefab != null)
+            {
+                var volumes = prefab.GetComponentsInChildren<Volume>();
+                _isoVolume = volumes[0];
+                _zoomVolume = volumes[1];
+                _fovVolume = volumes[2];
+            }
+        }
+
+        public void OnEnable() =>
+            UpdatePhysicalValues();
+
+        public void Update()
+        {
+            if (_presetData == null)
+                return;
+
+            if (_camera == null && _cinemachineCamera == null)
+                return;
+
+            // Convert normalized values to physical values
+            UpdatePhysicalValues();
+
+            if (_cinemachineCamera != null)
+            {
+                _cinemachineCamera.Lens.FieldOfView = Camera.FocalLengthToFieldOfView(FocalLength, SensorSize.y);
+                _cinemachineCamera.Lens.PhysicalProperties.SensorSize = SensorSize;
+                _cinemachineCamera.Lens.PhysicalProperties.Aperture = FStop;
+                _cinemachineCamera.Lens.PhysicalProperties.Iso = ISO;
+                _cinemachineCamera.Lens.PhysicalProperties.ShutterSpeed = ShutterSpeed;
+            }
+            else
+            {
+                _camera.fieldOfView = Camera.FocalLengthToFieldOfView(FocalLength, SensorSize.y);
+                _camera.sensorSize = SensorSize;
+                _camera.focalLength = FocalLength;
+                _camera.aperture = FStop;
+                _camera.iso = ISO;
+                _camera.shutterSpeed = ShutterSpeedUnscaled;
+            }
+
+            _isoVolume.weight = IsoMultiplier * _presetData.NoiseStrength;
+            _zoomVolume.weight = ZoomMultiplier * _presetData.NoiseStrength;
+
+            var focalLengthDistortionMultiplier = FocalLength;
+            focalLengthDistortionMultiplier = Mathf.Clamp01(focalLengthDistortionMultiplier.Remap(35, 1, 0, 1));
+
+            _fovVolume.weight = _presetData.AffectLensDistortion ? 1 - ZoomMultiplier : 0;
+            _fovVolume.weight *= focalLengthDistortionMultiplier * _presetData.NoiseStrength;
+        }
+
+        private void UpdatePhysicalValues()
+        {
+            if (_presetData == null)
+                return;
+
+            // Convert normalized values to physical ranges
+            FStop = _presetData.FStopRange.x.Lerp(_presetData.FStopRange.y, ZoomMultiplier);
+            ShutterSpeed = ToShutterSpeed(_presetData.ShutterRange.x.Slerp(_presetData.ShutterRange.y, ShutterSpeedMultiplier, 0.5f));
+            ISO = Mathf.RoundToInt(_presetData.ISORange.x.Lerp(_presetData.ISORange.y, IsoMultiplier));
+            FocalLength = Mathf.Max(1, _presetData.FocalLengthRange.x.Lerp(_presetData.FocalLengthRange.y, ZoomMultiplier));
+        }
+
+        private float ToShutterSpeed(double timesPerSecond) =>
+            (float)(1 / timesPerSecond);
+    }
+}
