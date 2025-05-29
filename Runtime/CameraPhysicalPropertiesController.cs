@@ -29,7 +29,7 @@ namespace UnityEssentials
         public int ISO { get; private set; }
 
         public Vector2 SensorSize => _presetData.SensorSize;
-        public float ShutterSpeedUnscaled => _presetData.ShutterRange.x.Slerp(_presetData.ShutterRange.y, ShutterSpeedMultiplier, 0.5f);
+        public float ShutterSpeedUnscaled => _presetData.ShutterRange.Slerp(ShutterSpeedMultiplier, 0.5f);
 
         public CameraPresetData Preset
         {
@@ -104,10 +104,10 @@ namespace UnityEssentials
                 return;
 
             // Convert normalized values to physical ranges
-            FStop = _presetData.FStopRange.x.Lerp(_presetData.FStopRange.y, ZoomMultiplier);
-            ShutterSpeed = ToShutterSpeed(_presetData.ShutterRange.x.Slerp(_presetData.ShutterRange.y, ShutterSpeedMultiplier, 0.5f));
-            ISO = Mathf.RoundToInt(_presetData.ISORange.x.Lerp(_presetData.ISORange.y, IsoMultiplier));
-            FocalLength = Mathf.Max(1, _presetData.FocalLengthRange.x.Lerp(_presetData.FocalLengthRange.y, ZoomMultiplier));
+            FStop = _presetData.FStopRange.Lerp(ZoomMultiplier);
+            ShutterSpeed = ToShutterSpeed(_presetData.ShutterRange.Slerp(ShutterSpeedMultiplier, 0.5f));
+            ISO = Mathf.RoundToInt(_presetData.ISORange.Lerp(IsoMultiplier));
+            FocalLength = Mathf.Max(1, _presetData.FocalLengthRange.Lerp(ZoomMultiplier));
         }
 
         private float ToShutterSpeed(double timesPerSecond) =>
