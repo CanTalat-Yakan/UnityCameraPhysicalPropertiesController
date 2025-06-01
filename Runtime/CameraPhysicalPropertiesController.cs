@@ -88,7 +88,7 @@ namespace UnityEssentials
                 _camera.shutterSpeed = ShutterSpeedUnscaled;
             }
 
-            _isoVolume.weight = IsoMultiplier * NoiseStrength;
+            _isoVolume.weight = IsoMultiplier * NoiseStrength * GetIsoNoiseWeight();
             _zoomVolume.weight = ZoomMultiplier * NoiseStrength;
 
             var focalLengthDistortionMultiplier = FocalLength;
@@ -112,5 +112,16 @@ namespace UnityEssentials
 
         private float ToShutterSpeed(double timesPerSecond) =>
             (float)(1 / timesPerSecond);
+
+        private float GetIsoNoiseWeight()
+        {
+            const int minIso = 400;
+            const int maxIso = 6400;
+
+            if (ISO <= minIso) return 0;
+            if (ISO >= maxIso) return 1;
+
+            return (ISO - minIso) / (float)(maxIso - minIso);
+        }
     }
 }
