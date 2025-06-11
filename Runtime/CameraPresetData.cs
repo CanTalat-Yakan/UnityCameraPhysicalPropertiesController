@@ -5,6 +5,7 @@ namespace UnityEssentials
     public enum SensorStandard
     {
         Standard,               // X: 50     Y: 50
+        StandardWide,           // X: 88     Y: 50
         Hero12Black,            // X: 7.6    Y: 5.7
         Hero11Black,            // X: 8      Y: 6
         Hero10Black,            // X: 6.17   Y: 4.55
@@ -28,17 +29,21 @@ namespace UnityEssentials
     public class CameraPresetData : ScriptableObject
     {
         [Space]
-        public Vector2 ShutterRange = new(2000, 50);
+        [MinMaxSlider(0.033f, 2500)]
+        public Vector2 ShutterSpeed1OverXRange = new(50, 2000);
 
         [Space]
+        [MinMaxSlider(0, 32)]
         public Vector2 FStopRange = new(3.5f, 5.6f);
+        [MinMaxSlider(0, 2560)]
         public Vector2Int ISORange = new(100, 2000);
 
         [Space]
+        [MinMaxSlider(0, 200)]
         public Vector2 FocalLengthRange = new(22f, 70f);
-        public bool LensDistortion = true;
 
         [Space]
+        public bool LensDistortion = true;
         public SensorStandard SensorType = SensorStandard.Super35;
         [HideInInspector] public Vector2 SensorSize; // The size calculated from the sensor type 
 
@@ -49,6 +54,9 @@ namespace UnityEssentials
             {
                 case SensorStandard.Standard:
                     SensorSize = new Vector2(50f, 50f);
+                    break;
+                case SensorStandard.StandardWide:
+                    SensorSize = new Vector2(88f, 50f);
                     break;
                 case SensorStandard.Hero12Black:
                     SensorSize = new Vector2(7.6f, 5.7f);

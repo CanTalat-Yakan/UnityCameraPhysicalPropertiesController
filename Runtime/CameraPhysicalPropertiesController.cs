@@ -11,7 +11,7 @@ namespace UnityEssentials
         [SerializeField] private CameraPresetData _presetData;
 
         [Space]
-        [Range(0, 1)] public float NoiseStrength = 1;
+        [Range(0, 1)] public float EffectStrength = 1;
         [Range(0, 1)] public float ZoomMultiplier = 0.5f;
         [Range(0, 1)] public float IsoMultiplier = 0.5f;
         [Range(0, 1)] public float ShutterSpeedMultiplier = 0.5f;
@@ -29,7 +29,7 @@ namespace UnityEssentials
         public int ISO { get; private set; }
 
         public Vector2 SensorSize => _presetData.SensorSize;
-        public float ShutterSpeedUnscaled => _presetData.ShutterRange.Slerp(ShutterSpeedMultiplier, 0.5f);
+        public float ShutterSpeedUnscaled => 1 - _presetData.ShutterSpeed1OverXRange.Slerp(ShutterSpeedMultiplier, 0.5f);
 
         public CameraPresetData Preset
         {
@@ -88,14 +88,14 @@ namespace UnityEssentials
                 _camera.shutterSpeed = ShutterSpeedUnscaled;
             }
 
-            _isoVolume.weight = IsoMultiplier * NoiseStrength * GetIsoNoiseWeight();
-            _zoomVolume.weight = ZoomMultiplier * NoiseStrength;
+            _isoVolume.weight = IsoMultiplier * EffectStrength * GetIsoNoiseWeight();
+            _zoomVolume.weight = ZoomMultiplier * EffectStrength;
 
             var focalLengthDistortionMultiplier = FocalLength;
             focalLengthDistortionMultiplier = Mathf.Clamp01(focalLengthDistortionMultiplier.Remap(35, 1, 0, 1));
 
             _fovVolume.weight = _presetData.LensDistortion ? 1 - ZoomMultiplier : 0;
-            _fovVolume.weight *= focalLengthDistortionMultiplier * NoiseStrength;
+            _fovVolume.weight *= focalLengthDistortionMultiplier * EffectStrength;
         }
 
         private void UpdatePhysicalValues()
@@ -105,7 +105,7 @@ namespace UnityEssentials
 
             // Convert normalized values to physical ranges
             FStop = _presetData.FStopRange.Lerp(ZoomMultiplier);
-            ShutterSpeed = ToShutterSpeed(_presetData.ShutterRange.Slerp(ShutterSpeedMultiplier, 0.5f));
+            ShutterSpeed = ToShutterSpeed(1 - _presetData.ShutterSpeed1OverXRange.Slerp(ShutterSpeedMultiplier, 0.5f));
             ISO = Mathf.RoundToInt(_presetData.ISORange.Lerp(IsoMultiplier));
             FocalLength = Mathf.Max(1, _presetData.FocalLengthRange.Lerp(ZoomMultiplier));
         }

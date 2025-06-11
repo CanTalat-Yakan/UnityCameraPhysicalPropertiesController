@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91089045fb678fd4cafdc23ba1c68f98, type: 3}
   m_Name: CameraPreset_Default
   m_EditorClassIdentifier: 
-  ShutterRange: {x: 2000, y: 50}
-  FStopRange: {x: 3.5, y: 5.6}
+  ShutterSpeed1OverXRange: {x: 50, y: 2000}
+  FStopRange: {x: 3.5, y: 5.7}
   ISORange: {x: 100, y: 2000}
-  FocalLengthRange: {x: 12, y: 70}
-  LensDistortion: 0
-  SensorType: 10
-  SensorSize: {x: 24.89, y: 18.66}
+  FocalLengthRange: {x: 24, y: 70}
+  LensDistortion: 1
+  SensorType: 1
+  SensorSize: {x: 88, y: 50}
