@@ -11,7 +11,7 @@ namespace UnityEssentials
         [SerializeField] private CameraPresetData _presetData;
 
         [Space]
-        [Range(0, 1)] public float EffectStrength = 1;
+        [Range(0, 1)] public float EffectsStrength = 1;
         [Range(0, 1)] public float ZoomMultiplier = 0.5f;
         [Range(0, 1)] public float IsoMultiplier = 0.5f;
         [Range(0, 1)] public float ShutterSpeedMultiplier = 0.5f;
@@ -88,14 +88,14 @@ namespace UnityEssentials
                 _camera.shutterSpeed = ShutterSpeedUnscaled;
             }
 
-            _isoVolume.weight = IsoMultiplier * EffectStrength * GetIsoNoiseWeight();
-            _zoomVolume.weight = ZoomMultiplier * EffectStrength;
+            _isoVolume.weight = IsoMultiplier * EffectsStrength * GetIsoNoiseWeight();
+            _zoomVolume.weight = ZoomMultiplier * EffectsStrength;
 
             var focalLengthDistortionMultiplier = FocalLength;
             focalLengthDistortionMultiplier = Mathf.Clamp01(focalLengthDistortionMultiplier.Remap(35, 1, 0, 1));
 
             _fovVolume.weight = _presetData.LensDistortion ? 1 - ZoomMultiplier : 0;
-            _fovVolume.weight *= focalLengthDistortionMultiplier * EffectStrength;
+            _fovVolume.weight *= focalLengthDistortionMultiplier * EffectsStrength;
         }
 
         private void UpdatePhysicalValues()

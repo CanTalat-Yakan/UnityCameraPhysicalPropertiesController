@@ -15,7 +15,7 @@ MonoBehaviour:
   ShutterSpeed1OverXRange: {x: 50, y: 2000}
   FStopRange: {x: 3.5, y: 5.7}
   ISORange: {x: 100, y: 2000}
-  FocalLengthRange: {x: 24, y: 70}
+  FocalLengthRange: {x: 30, y: 70}
   LensDistortion: 1
   SensorType: 1
   SensorSize: {x: 88, y: 50}
